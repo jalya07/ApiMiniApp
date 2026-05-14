@@ -14,8 +14,7 @@ public class AppDbContext:DbContext
  
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
-        modelBuilder.ApplyConfiguration(new EventConfiguration());
-        modelBuilder.ApplyConfiguration(new OrganizerConfiguration());
-        modelBuilder.ApplyConfiguration(new TicketConfiguration());
+        modelBuilder.ApplyConfigurationsFromAssembly(typeof(AppDbContext).Assembly);
+        base.OnModelCreating(modelBuilder);
     }
 }

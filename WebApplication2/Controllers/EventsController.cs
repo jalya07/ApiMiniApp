@@ -4,6 +4,8 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using WebApplication2.Data;
 using WebApplication2.Dtos;
+using WebApplication2.Dtos.OrganizerDto;
+using WebApplication2.Dtos.TicketDto;
 using WebApplication2.Entities;
 using WebApplication2.Service;
 
@@ -59,9 +61,9 @@ public class EventsController : Controller
          if (!validation.IsValid)
              return BadRequest(validation.Errors.Select(e => e.ErrorMessage));
   
-         // var organizerExists = await _db.Organizers.AnyAsync(o => o.OrganizerId == dto.OrganizerId);
-         // if (!organizerExists)
-             // return BadRequest($"Organizer with Id {dto.OrganizerId} does not exist.");
+         var organizerExists = await _db.Organizers.AnyAsync(o => o.OrganizerId == dto.OrganizerId);
+         if (!organizerExists)
+             return BadRequest($"Organizer with Id {dto.OrganizerId} does not exist.");
   
          var entity = _mapper.Map<Event>(dto);
          _db.Events.Add(entity);
@@ -81,9 +83,9 @@ public class EventsController : Controller
          var entity = await _db.Events.FindAsync(id);
          if (entity is null) return NotFound();
   
-         // var organizerExists = await _db.Organizers.AnyAsync(o => o.OrganizerId == dto.OrganizerId);
-         // if (!organizerExists)
-             // return BadRequest($"Organizer with Id {dto.OrganizerId} does not exist.");
+         var organizerExists = await _db.Organizers.AnyAsync(o => o.OrganizerId == dto.OrganizerId);
+         if (!organizerExists)
+             return BadRequest($"Organizer with Id {dto.OrganizerId} does not exist.");
   
          _mapper.Map(dto, entity);
          await _db.SaveChangesAsync();
@@ -91,95 +93,95 @@ public class EventsController : Controller
      }
   
      // DELETE /api/events/{id}
-     // [HttpDelete("{id:int}")]
-     // public async Task<IActionResult> Delete(int id)
-     // {
-     //     var entity = await _db.Events.FindAsync(id);
-     //     if (entity is null) return NotFound();
-     //
-     //     _fileService.DeleteFile(entity.BannerImageUrl);
-     //     _db.Events.Remove(entity);
-     //     await _db.SaveChangesAsync();
-     //     return NoContent();
-     // }
-     //
-     // // POST /api/events/{id}/banner
-     // [HttpPost("{id:int}/banner")]
-     // [Consumes("multipart/form-data")]
-     // public async Task<ActionResult<EventReadDto>> UploadBanner(int id, IFormFile file)
-     // {
-     //     var entity = await _db.Events.FindAsync(id);
-     //     if (entity is null) return NotFound();
-     //
-     //     if (file is null || file.Length == 0)
-     //         return BadRequest("No file provided.");
-     //
-     //     try
-     //     {
-     //         _fileService.DeleteFile(entity.BannerImageUrl);
-     //         entity.BannerImageUrl = await _fileService.SaveFileAsync(file, "banners");
-     //         await _db.SaveChangesAsync();
-     //     }
-     //     catch (InvalidOperationException ex)
-     //     {
-     //         return BadRequest(ex.Message);
-     //     }
-     //
-     //     return Ok(_mapper.Map<EventReadDto>(entity));
-     // }
+     [HttpDelete("{id:int}")]
+     public async Task<IActionResult> Delete(int id)
+     {
+         var entity = await _db.Events.FindAsync(id);
+         if (entity is null) return NotFound();
+     
+         _fileService.DeleteFile(entity.BannerImageUrl);
+         _db.Events.Remove(entity);
+         await _db.SaveChangesAsync();
+         return NoContent();
+     }
+     
+     // POST /api/events/{id}/banner
+     [HttpPost("{id:int}/banner")]
+     [Consumes("multipart/form-data")]
+     public async Task<ActionResult<EventReadDto>> UploadBanner(int id, IFormFile file)
+     {
+         var entity = await _db.Events.FindAsync(id);
+         if (entity is null) return NotFound();
+     
+         if (file is null || file.Length == 0)
+             return BadRequest("No file provided.");
+     
+         try
+         {
+             _fileService.DeleteFile(entity.BannerImageUrl);
+             entity.BannerImageUrl = await _fileService.SaveFileAsync(file, "banners");
+             await _db.SaveChangesAsync();
+         }
+         catch (InvalidOperationException ex)
+         {
+             return BadRequest(ex.Message);
+         }
+     
+         return Ok(_mapper.Map<EventReadDto>(entity));
+     }
   
-     // // GET /api/events/{eventId}/tickets
-     // [HttpGet("{eventId:int}/tickets")]
-     // public async Task<ActionResult<IEnumerable<TicketReadDto>>> GetTickets(int eventId)
-     // {
-     //     var eventExists = await _db.Events.AnyAsync(e => e.EventId == eventId);
-     //     if (!eventExists) return NotFound($"Event {eventId} not found.");
-     //
-     //     var tickets = await _db.Tickets
-     //         .AsNoTracking()
-     //         .Where(t => t.EventId == eventId)
-     //         .ToListAsync();
-     //
-     //     return Ok(_mapper.Map<IEnumerable<TicketReadDto>>(tickets));
-     // }
-     //
-     // // POST /api/events/{eventId}/tickets
-     // [HttpPost("{eventId:int}/tickets")]
-     // public async Task<ActionResult<TicketReadDto>> CreateTicket(
-     //     int eventId,
-     //     [FromBody] TicketCreateDto dto,
-     //     [FromServices] IValidator<TicketCreateDto> validator)
-     // {
-     //     var validation = await validator.ValidateAsync(dto);
-     //     if (!validation.IsValid)
-     //         return BadRequest(validation.Errors.Select(e => e.ErrorMessage));
-     //
-     //     var eventExists = await _db.Events.AnyAsync(e => e.EventId == eventId);
-     //     if (!eventExists) return NotFound($"Event {eventId} not found.");
-     //
-     //     var ticket = _mapper.Map<Ticket>(dto);
-     //     ticket.EventId = eventId;
-     //     _db.Tickets.Add(ticket);
-     //     await _db.SaveChangesAsync();
-     //
-     //     return CreatedAtAction(
-     //         nameof(TicketsController.GetById),
-     //         "Tickets",
-     //         new { id = ticket.TicketId },
-     //         _mapper.Map<TicketReadDto>(ticket));
-     // }
-     //
-     // // GET /api/events/{eventId}/organizer
-     // [HttpGet("{eventId:int}/organizer")]
-     // public async Task<ActionResult<OrganizerReadDto>> GetOrganizer(int eventId)
-     // {
-     //     var ev = await _db.Events
-     //         .AsNoTracking()
-     //         .Include(e => e.Organizer)
-     //         .FirstOrDefaultAsync(e => e.EventId == eventId);
-     //
-     //     if (ev is null) return NotFound($"Event {eventId} not found.");
-     //
-     //     return Ok(_mapper.Map<OrganizerReadDto>(ev.Organizer));
-     // }
+     // GET /api/events/{eventId}/tickets
+     [HttpGet("{eventId:int}/tickets")]
+     public async Task<ActionResult<IEnumerable<TicketReadDto>>> GetTickets(int eventId)
+     {
+         var eventExists = await _db.Events.AnyAsync(e => e.EventId == eventId);
+         if (!eventExists) return NotFound($"Event {eventId} not found.");
+     
+         var tickets = await _db.Tickets
+             .AsNoTracking()
+             .Where(t => t.EventId == eventId)
+             .ToListAsync();
+     
+         return Ok(_mapper.Map<IEnumerable<TicketReadDto>>(tickets));
+     }
+     
+     // POST /api/events/{eventId}/tickets
+     [HttpPost("{eventId:int}/tickets")]
+     public async Task<ActionResult<TicketReadDto>> CreateTicket(
+         int eventId,
+         [FromBody] TicketCreateDto dto,
+         [FromServices] IValidator<TicketCreateDto> validator)
+     {
+         var validation = await validator.ValidateAsync(dto);
+         if (!validation.IsValid)
+             return BadRequest(validation.Errors.Select(e => e.ErrorMessage));
+     
+         var eventExists = await _db.Events.AnyAsync(e => e.EventId == eventId);
+         if (!eventExists) return NotFound($"Event {eventId} not found.");
+     
+         var ticket = _mapper.Map<Ticket>(dto);
+         ticket.EventId = eventId;
+         _db.Tickets.Add(ticket);
+         await _db.SaveChangesAsync();
+     
+         return CreatedAtAction(
+             nameof(TicketsController.GetById),
+             "Tickets",
+             new { id = ticket.TicketId },
+             _mapper.Map<TicketReadDto>(ticket));
+     }
+     
+     // GET /api/events/{eventId}/organizer
+     [HttpGet("{eventId:int}/organizer")]
+     public async Task<ActionResult<OrganizerReadDto>> GetOrganizer(int eventId)
+     {
+         var ev = await _db.Events
+             .AsNoTracking()
+             .Include(e => e.Organizer)
+             .FirstOrDefaultAsync(e => e.EventId == eventId);
+     
+         if (ev is null) return NotFound($"Event {eventId} not found.");
+     
+         return Ok(_mapper.Map<OrganizerReadDto>(ev.Organizer));
+     }
 }
