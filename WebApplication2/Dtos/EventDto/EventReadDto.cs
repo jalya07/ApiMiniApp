@@ -8,7 +8,5 @@ public class EventReadDto
     public DateTime Date { get; set; }
     public string Location { get; set; } = null!;
     public string? BannerImageUrl { get; set; }
-    //
-    // public OrganizerReadDto Organizer { get; set; } = null!;
-    // public List<TicketReadDto> Tickets { get; set; } = new List<TicketReadDto>();
+    public int OrganizerId { get; set; }
 }
