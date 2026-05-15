@@ -10,6 +10,8 @@ using WebApplication2.Service;
 
 namespace WebApplication2.Controllers;
 
+[Route("api/[controller]")]
+[ApiController]
 public class OrganizersController : Controller
 {
      private readonly AppDbContext _db;

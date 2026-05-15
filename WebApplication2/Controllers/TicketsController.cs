@@ -7,6 +7,8 @@ using WebApplication2.Dtos.TicketDto;
 
 namespace WebApplication2.Controllers;
 
+[Route("api/[controller]")]
+[ApiController]
 public class TicketsController : Controller
 {
     private readonly AppDbContext _db;

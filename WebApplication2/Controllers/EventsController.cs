@@ -11,8 +11,8 @@ using WebApplication2.Service;
 
 namespace WebApplication2.Controllers;
 
+[Route("api/[controller]")]
 [ApiController]
-[Route("api/events")]
 public class EventsController : Controller
 {
    private readonly AppDbContext _db;
