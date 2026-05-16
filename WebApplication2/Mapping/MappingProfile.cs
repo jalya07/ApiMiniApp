@@ -8,7 +8,7 @@ namespace WebApplication2.Mapping;
 
 public class MappingProfile: Profile
 {
-    public MappingProfile()
+    public MappingProfile(HttpClientHandler httpClientHandler)
     {
         // Event
         CreateMap<Event, EventReadDto>();
