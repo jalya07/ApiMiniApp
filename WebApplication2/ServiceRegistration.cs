@@ -19,11 +19,22 @@ public static class ServiceRegistration
         services.AddHttpContextAccessor();
         services.AddAutoMapper(opt=>
             opt.AddProfile(new MappingProfile(new HttpClientHandler())));
-        services.AddIdentityCore<AppUser, IdentityRole>(opt =>
+        services.AddIdentity<AppUser, IdentityRole>(opt =>
             {
+                opt.Password.RequireDigit = false;
+                opt.Password.RequireLowercase = false;
+                opt.Password.RequireNonAlphanumeric = false;
+                opt.Password.RequireUppercase = false;
+                opt.Password.RequiredLength = 6;
             })
             .AddEntityFrameworkStores<AppDbContext>()
             .AddDefaultTokenProviders();;
+        
+        // using (var serviceScope = services.BuildServiceProvider().CreateScope())
+        // {
+        //     var dbContext = serviceScope.ServiceProvider.GetRequiredService<AppDbContext>();
+        //     dbContext.Database.Migrate();
+        //  }
         
     }
 }

@@ -2,6 +2,7 @@ using AutoMapper;
 using WebApplication2.Dtos;
 using WebApplication2.Dtos.OrganizerDto;
 using WebApplication2.Dtos.TicketDto;
+using WebApplication2.Dtos.UserDtos;
 using WebApplication2.Entities;
 
 namespace WebApplication2.Mapping;
@@ -24,5 +25,7 @@ public class MappingProfile: Profile
         CreateMap<Ticket, TicketReadDto>();
         CreateMap<TicketCreateDto, Ticket>();
         CreateMap<TicketUpdateDto, Ticket>();
+        
+        CreateMap<RegisterDto,AppUser>();
     }
 }

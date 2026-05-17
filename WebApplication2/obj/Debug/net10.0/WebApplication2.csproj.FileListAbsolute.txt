@@ -219,3 +219,5 @@
 /Users/jalyahesenli/RiderProjects/WebApplication2/WebApplication2/obj/Debug/net10.0/WebApplication2.genruntimeconfig.cache
 /Users/jalyahesenli/RiderProjects/WebApplication2/WebApplication2/obj/Debug/net10.0/ref/WebApplication2.dll
 /Users/jalyahesenli/RiderProjects/WebApplication2/WebApplication2/obj/Debug/net10.0/WebApplication2.sourcelink.json
+/Users/jalyahesenli/RiderProjects/WebApplication2/WebApplication2/bin/Debug/net10.0/Microsoft.AspNetCore.Identity.EntityFrameworkCore.dll
+/Users/jalyahesenli/RiderProjects/WebApplication2/WebApplication2/bin/Debug/net10.0/Microsoft.AspNetCore.Authentication.JwtBearer.dll
