@@ -29,11 +29,19 @@ public class Program
 
         app.UseHttpsRedirection();
         app.UseStaticFiles();
-        app.UseAuthorization();
+        app.UseAuthentication();
         app.UseAuthorization();
         app.MapControllers();
         
-
+        app.UseExceptionHandler(a => a.Run(async ctx =>
+        {
+            var feature = ctx.Features.Get<Microsoft.AspNetCore.Diagnostics.IExceptionHandlerFeature>();
+            ctx.Response.ContentType = "application/json";
+            await ctx.Response.WriteAsJsonAsync(new { 
+                error = feature?.Error.Message, 
+                detail = feature?.Error.StackTrace 
+            });
+        }));
         app.Run();
     }
 }
