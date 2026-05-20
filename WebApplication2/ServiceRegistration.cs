@@ -1,8 +1,10 @@
+using FluentValidation;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using WebApplication2.Data;
 using WebApplication2.Entities;
 using WebApplication2.Mapping;
+using WebApplication2.Validators.UserValidator;
 
 namespace WebApplication2;
 
@@ -19,6 +21,7 @@ public static class ServiceRegistration
         services.AddHttpContextAccessor();
         services.AddAutoMapper(opt=>
             opt.AddProfile(new MappingProfile(new HttpClientHandler())));
+        services.AddValidatorsFromAssemblyContaining<RegisterCreateValidator>();
         services.AddIdentity<AppUser, IdentityRole>(opt =>
             {
                 opt.Password.RequireDigit = false;
