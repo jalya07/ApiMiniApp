@@ -1,6 +1,7 @@
 using FluentValidation;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.IdentityModel.Tokens;
 using WebApplication2.Data;
 using WebApplication2.Entities;
 using WebApplication2.Mapping;
@@ -38,6 +39,22 @@ public static class ServiceRegistration
         //     var dbContext = serviceScope.ServiceProvider.GetRequiredService<AppDbContext>();
         //     dbContext.Database.Migrate();
         //  }
-        
+
+        services.AddAuthentication("Bearer")
+            .AddJwtBearer("Bearer", options =>
+            {
+                options.TokenValidationParameters = new TokenValidationParameters
+                {
+                    ValidateIssuer = false,
+                    ValidateAudience = false,
+                    ValidateLifetime = true,
+                    ValidateIssuerSigningKey = true,
+                    IssuerSigningKey = new SymmetricSecurityKey(
+                        System.Text.Encoding.UTF8.GetBytes(config["Jwt:SecretKey"]!)),
+                    ClockSkew = TimeSpan.Zero
+                };
+            });
+
+
     }
 }
