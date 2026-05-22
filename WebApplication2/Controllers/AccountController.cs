@@ -2,11 +2,13 @@ using System.Security.Claims;
 using System.Text;
 using AutoMapper;
 using FluentValidation;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.IdentityModel.Tokens;
 using WebApplication2.Dtos.UserDtos;
 using WebApplication2.Entities;
+using WebApplication2.Service;
 
 namespace WebApplication2.Controllers;
 
@@ -17,6 +19,7 @@ public class AccountController(
     UserManager<AppUser> userManager,
     RoleManager<IdentityRole> roleManager,
     IConfiguration config,
+    JwtService jwtService,
     IMapper mapper) : ControllerBase
 {
     [HttpPost("register")]
@@ -49,26 +52,28 @@ public class AccountController(
             return BadRequest("Invalid username or password");
         
         var roles = await userManager.GetRolesAsync(user);
-        var claims = new List<Claim>
-        { 
-            new Claim(ClaimTypes.NameIdentifier, user.Id.ToString()), 
-            new Claim(ClaimTypes.Name, user.UserName),
-            new Claim("FullName", user.FullName)
-        }; 
-        claims.AddRange(roles.Select(x => new Claim(ClaimTypes.Role, x)));
-        var key=new SymmetricSecurityKey(Encoding.UTF8.GetBytes(config["Jwt:SecretKey"]!));
-        var creds = new SigningCredentials(key, SecurityAlgorithms.HmacSha256);
-        var jwtSecurityToken=new System.IdentityModel.Tokens.Jwt.JwtSecurityToken(
-            issuer: config["Jwt:Issuer"],
-            audience: config["Jwt:Audience"],
-            claims: claims,
-            expires: DateTime.Now.AddDays(7),
-            signingCredentials: creds);
-        
-        var token = new System.IdentityModel.Tokens.Jwt.JwtSecurityTokenHandler().WriteToken(jwtSecurityToken);
-        return Ok(new{token});
+       
+        return Ok(new{
+            token = jwtService.GenerateToken(user, roles, config)
+        });
     }
-    
+
+    [HttpPost("profile")]
+    [Authorize]
+    public IActionResult Profile()
+    {
+        var userId = User.FindFirst(ClaimTypes.NameIdentifier);
+        var userName = User.Identity?.Name;
+        var fullName = User.FindFirst("FullName")?.Value;
+        var role = User.Claims.Where(c=>c.Type == ClaimTypes.Role).Select(c => c.Value).FirstOrDefault();
+        return Ok(new
+        {
+           userId,
+           userName,
+           fullName,
+           role
+        });
+    }
 
     // [HttpPost]
     // public async Task<IActionResult> CreateRole()

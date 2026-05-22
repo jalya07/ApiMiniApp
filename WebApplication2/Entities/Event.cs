@@ -13,4 +13,5 @@ public class Event
     public Organizer Organizer { get; set; } = null!;
  
     public ICollection<Ticket> Tickets { get; set; } = new List<Ticket>();
+    public ICollection<UserEvent> UserEvents { get; set; } = new List<UserEvent>();
 }

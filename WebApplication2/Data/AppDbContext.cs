@@ -12,6 +12,7 @@ public class AppDbContext:IdentityDbContext<AppUser>
     public DbSet<Event> Events => Set<Event>();
     public DbSet<Organizer> Organizers => Set<Organizer>();
     public DbSet<Ticket> Tickets => Set<Ticket>();
+    public DbSet<UserEvent> UserEvents => Set<UserEvent>();
  
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
