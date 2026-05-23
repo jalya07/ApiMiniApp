@@ -21,11 +21,11 @@ using (var scope = app.Services.CreateScope())
             await roleManager.CreateAsync(new IdentityRole(role));
 
     // Test user
-    if (await userManager.FindByNameAsync("testuser") == null)
+    if (await userManager.FindByNameAsync("Admin") == null)
     {
-        var user = new AppUser { UserName = "testuser", Email = "test@test.com", FullName = "Test User" };
+        var user = new AppUser { UserName = "admin", Email = "admin@test.com", FullName = "Admin" };
         await userManager.CreateAsync(user, "password123");
-        await userManager.AddToRoleAsync(user, "Member");
+        await userManager.AddToRoleAsync(user, "Admin");
 
         // UserEvents seed — после того как user создан
         if (!db.UserEvents.Any())
@@ -38,17 +38,6 @@ using (var scope = app.Services.CreateScope())
         }
     }
 }
-// using (var scope = app.Services.CreateScope())
-// {
-//     var roleManager = scope.ServiceProvider.GetRequiredService<RoleManager<IdentityRole>>();
-//     
-//     string[] roles = { "Member", "Admin" };
-//     foreach (var role in roles)
-//     {
-//         if (!await roleManager.RoleExistsAsync(role))
-//             await roleManager.CreateAsync(new IdentityRole(role));
-//     }
-// }
 
 app.UseExceptionHandler(a => a.Run(async ctx =>
 {
@@ -56,8 +45,8 @@ app.UseExceptionHandler(a => a.Run(async ctx =>
     ctx.Response.ContentType = "application/json";
     await ctx.Response.WriteAsJsonAsync(new { 
         error = feature?.Error.Message, 
-        inner = feature?.Error.InnerException?.Message,      // ← добавь это
-        inner2 = feature?.Error.InnerException?.InnerException?.Message, // ← и это
+        inner = feature?.Error.InnerException?.Message, 
+        inner2 = feature?.Error.InnerException?.InnerException?.Message,
         detail = feature?.Error.StackTrace 
     });
 }));
@@ -65,9 +54,8 @@ app.UseExceptionHandler(a => a.Run(async ctx =>
 app.UseSwagger();
 app.UseSwaggerUI();
 
-app.UseHttpsRedirection();
 app.UseStaticFiles();
-app.UseAuthentication(); // ← обязательно ДО UseAuthorization
+app.UseAuthentication(); 
 app.UseAuthorization();
 app.MapControllers();
 

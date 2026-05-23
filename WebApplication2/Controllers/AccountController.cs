@@ -58,7 +58,7 @@ public class AccountController(
         });
     }
 
-    [HttpPost("profile")]
+    [HttpGet("profile")]
     [Authorize]
     public IActionResult Profile()
     {

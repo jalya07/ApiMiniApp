@@ -1,7 +1,10 @@
+using System.Text;
 using FluentValidation;
+using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.IdentityModel.Tokens;
+using Microsoft.OpenApi.Models;
 using WebApplication2.Data;
 using WebApplication2.Entities;
 using WebApplication2.Mapping;
@@ -12,79 +15,79 @@ namespace WebApplication2;
 
 public static class ServiceRegistration
 {
-    public static void AddServices(this IServiceCollection services, IConfiguration config)
+  public static void AddServices(this IServiceCollection services, IConfiguration config)
+{
+    services.AddControllers();
+    services.AddDbContext<AppDbContext>(options =>
+        options.UseSqlServer(config.GetConnectionString("DefaultConnection")));
+    services.AddEndpointsApiExplorer();
+    services.AddHttpContextAccessor();
+    services.AddAutoMapper(opt =>
+        opt.AddProfile(new MappingProfile(new HttpClientHandler())));
+    services.AddValidatorsFromAssemblyContaining<RegisterCreateValidator>();
+    services.AddScoped<IFileUploadService, FileUploadService>();
+    services.AddScoped<JwtService>();
+
+    // 1. Identity ПЕРВЫМ — он регистрирует свои схемы
+    services.AddIdentity<AppUser, IdentityRole>(opt =>
     {
-        services.AddControllers();
-        services.AddDbContext<AppDbContext>(options =>
-            options.UseSqlServer(
-                config.GetConnectionString("DefaultConnection")));
-        services.AddEndpointsApiExplorer();
-        services.AddSwaggerGen();
-        services.AddHttpContextAccessor();
-        services.AddAutoMapper(opt=>
-            opt.AddProfile(new MappingProfile(new HttpClientHandler())));
-        services.AddValidatorsFromAssemblyContaining<RegisterCreateValidator>();
-        services.AddScoped<IFileUploadService, FileUploadService>();
-        services.AddIdentity<AppUser, IdentityRole>(opt =>
-            {
-                opt.Password.RequireDigit = false;
-                opt.Password.RequireLowercase = false;
-                opt.Password.RequireNonAlphanumeric = false;
-                opt.Password.RequireUppercase = false;
-                opt.Password.RequiredLength = 6;
-            })
-            .AddEntityFrameworkStores<AppDbContext>()
-            .AddDefaultTokenProviders();;
-        services.AddScoped<JwtService>();
-        
-        // using (var serviceScope = services.BuildServiceProvider().CreateScope())
-        // {
-        //     var dbContext = serviceScope.ServiceProvider.GetRequiredService<AppDbContext>();
-        //     dbContext.Database.Migrate();
-        //  }
+        opt.Password.RequireDigit = false;
+        opt.Password.RequireLowercase = false;
+        opt.Password.RequireNonAlphanumeric = false;
+        opt.Password.RequireUppercase = false;
+        opt.Password.RequiredLength = 6;
+    })
+    .AddEntityFrameworkStores<AppDbContext>()
+    .AddDefaultTokenProviders();
 
-        services.AddAuthentication("Bearer")
-            .AddJwtBearer("Bearer", options =>
-            {
-                options.TokenValidationParameters = new TokenValidationParameters
-                {
-                    ValidateIssuer = true,
-                    ValidateAudience = true,
-                    ValidateLifetime = true,
-                    ValidateIssuerSigningKey = true,
-                    ValidIssuer = config["Jwt:Issuer"],
-                    ValidAudience = config["Jwt:Audience"],
-                    IssuerSigningKey = new SymmetricSecurityKey(
-                        System.Text.Encoding.UTF8.GetBytes(config["Jwt:Key"]!)),
-                    ClockSkew = TimeSpan.Zero
-                };
-            });
-
-        //add jwt to swagger
-        services.AddSwaggerGen(c =>
+    // 2. Authentication ВТОРЫМ — перезаписывает схемы Identity на JWT
+    services.AddAuthentication(options =>
+    {
+        options.DefaultAuthenticateScheme = JwtBearerDefaults.AuthenticationScheme;
+        options.DefaultChallengeScheme = JwtBearerDefaults.AuthenticationScheme;
+        options.DefaultScheme = JwtBearerDefaults.AuthenticationScheme;
+    })
+    .AddJwtBearer(options =>
+    {
+        options.TokenValidationParameters = new TokenValidationParameters
         {
-            c.AddSecurityDefinition("Bearer", new Microsoft.OpenApi.Models.OpenApiSecurityScheme
+            ValidateIssuer = true,
+            ValidateAudience = true,
+            ValidateLifetime = true,
+            ValidateIssuerSigningKey = true,
+            ValidIssuer = config["Jwt:Issuer"],
+            ValidAudience = config["Jwt:Audience"],
+            IssuerSigningKey = new SymmetricSecurityKey(
+                Encoding.UTF8.GetBytes(config["Jwt:Key"]!)),
+            ClockSkew = TimeSpan.Zero
+        };
+    });
+
+    // 3. Swagger с JWT (без изменений)
+    services.AddSwaggerGen(c =>
+    {
+        c.AddSecurityDefinition("Bearer", new OpenApiSecurityScheme
+        {
+            Description = "JWT Authorization header. Example: \"Bearer {token}\"",
+            Name = "Authorization",
+            In = ParameterLocation.Header,
+            Type = SecuritySchemeType.ApiKey,
+            Scheme = "Bearer"
+        });
+        c.AddSecurityRequirement(new OpenApiSecurityRequirement
+        {
             {
-                Description = "JWT Authorization header using the Bearer scheme. Example: \"Authorization: Bearer {token}\"",
-                Name = "Authorization",
-                In = Microsoft.OpenApi.Models.ParameterLocation.Header,
-                Type = Microsoft.OpenApi.Models.SecuritySchemeType.ApiKey,
-                Scheme = "Bearer"
-            });
-            c.AddSecurityRequirement(new Microsoft.OpenApi.Models.OpenApiSecurityRequirement
-            {
+                new OpenApiSecurityScheme
                 {
-                    new Microsoft.OpenApi.Models.OpenApiSecurityScheme
+                    Reference = new OpenApiReference
                     {
-                        Reference = new Microsoft.OpenApi.Models.OpenApiReference
-                        {
-                            Type = Microsoft.OpenApi.Models.ReferenceType.SecurityScheme,
-                            Id = "Bearer"
-                        }
-                    },
-                    Array.Empty<string>()
-                }
-            });
-         });
-    }
+                        Type = ReferenceType.SecurityScheme,
+                        Id = "Bearer"
+                    }
+                },
+                Array.Empty<string>()
+            }
+        });
+    });
+}
 }
