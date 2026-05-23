@@ -1,6 +1,6 @@
 {
   "version": 2,
-  "dgSpecHash": "0dFIZ373H7c=",
+  "dgSpecHash": "4J5ov+LCaFI=",
   "success": true,
   "projectFilePath": "/Users/jalyahesenli/RiderProjects/WebApplication2/WebApplication2/WebApplication2.csproj",
   "expectedPackageFiles": [
@@ -8,10 +8,12 @@
     "/Users/jalyahesenli/.nuget/packages/automapper.extensions.microsoft.dependencyinjection/12.0.1/automapper.extensions.microsoft.dependencyinjection.12.0.1.nupkg.sha512",
     "/Users/jalyahesenli/.nuget/packages/azure.core/1.47.1/azure.core.1.47.1.nupkg.sha512",
     "/Users/jalyahesenli/.nuget/packages/azure.identity/1.14.2/azure.identity.1.14.2.nupkg.sha512",
+    "/Users/jalyahesenli/.nuget/packages/bouncycastle.cryptography/2.6.2/bouncycastle.cryptography.2.6.2.nupkg.sha512",
     "/Users/jalyahesenli/.nuget/packages/fluentvalidation/12.1.1/fluentvalidation.12.1.1.nupkg.sha512",
     "/Users/jalyahesenli/.nuget/packages/fluentvalidation.aspnetcore/11.3.0/fluentvalidation.aspnetcore.11.3.0.nupkg.sha512",
     "/Users/jalyahesenli/.nuget/packages/fluentvalidation.dependencyinjectionextensions/12.1.1/fluentvalidation.dependencyinjectionextensions.12.1.1.nupkg.sha512",
     "/Users/jalyahesenli/.nuget/packages/humanizer.core/2.14.1/humanizer.core.2.14.1.nupkg.sha512",
+    "/Users/jalyahesenli/.nuget/packages/mailkit/4.16.0/mailkit.4.16.0.nupkg.sha512",
     "/Users/jalyahesenli/.nuget/packages/microsoft.aspnetcore.authentication.jwtbearer/10.0.0/microsoft.aspnetcore.authentication.jwtbearer.10.0.0.nupkg.sha512",
     "/Users/jalyahesenli/.nuget/packages/microsoft.aspnetcore.identity.entityframeworkcore/10.0.0/microsoft.aspnetcore.identity.entityframeworkcore.10.0.0.nupkg.sha512",
     "/Users/jalyahesenli/.nuget/packages/microsoft.bcl.asyncinterfaces/8.0.0/microsoft.bcl.asyncinterfaces.8.0.0.nupkg.sha512",
@@ -48,6 +50,7 @@
     "/Users/jalyahesenli/.nuget/packages/microsoft.net.stringtools/17.14.28/microsoft.net.stringtools.17.14.28.nupkg.sha512",
     "/Users/jalyahesenli/.nuget/packages/microsoft.openapi/1.6.14/microsoft.openapi.1.6.14.nupkg.sha512",
     "/Users/jalyahesenli/.nuget/packages/microsoft.sqlserver.server/1.0.0/microsoft.sqlserver.server.1.0.0.nupkg.sha512",
+    "/Users/jalyahesenli/.nuget/packages/mimekit/4.16.0/mimekit.4.16.0.nupkg.sha512",
     "/Users/jalyahesenli/.nuget/packages/mono.texttemplating/3.0.0/mono.texttemplating.3.0.0.nupkg.sha512",
     "/Users/jalyahesenli/.nuget/packages/newtonsoft.json/13.0.3/newtonsoft.json.13.0.3.nupkg.sha512",
     "/Users/jalyahesenli/.nuget/packages/swashbuckle.aspnetcore/6.6.2/swashbuckle.aspnetcore.6.6.2.nupkg.sha512",
@@ -68,7 +71,7 @@
     "/Users/jalyahesenli/.nuget/packages/system.memory.data/8.0.1/system.memory.data.8.0.1.nupkg.sha512",
     "/Users/jalyahesenli/.nuget/packages/system.reflection.metadataloadcontext/7.0.0/system.reflection.metadataloadcontext.7.0.0.nupkg.sha512",
     "/Users/jalyahesenli/.nuget/packages/system.resources.extensions/9.0.0/system.resources.extensions.9.0.0.nupkg.sha512",
-    "/Users/jalyahesenli/.nuget/packages/system.security.cryptography.pkcs/9.0.4/system.security.cryptography.pkcs.9.0.4.nupkg.sha512",
+    "/Users/jalyahesenli/.nuget/packages/system.security.cryptography.pkcs/10.0.0/system.security.cryptography.pkcs.10.0.0.nupkg.sha512",
     "/Users/jalyahesenli/.nuget/packages/system.security.cryptography.protecteddata/9.0.4/system.security.cryptography.protecteddata.9.0.4.nupkg.sha512",
     "/Users/jalyahesenli/.nuget/packages/system.security.permissions/9.0.0/system.security.permissions.9.0.0.nupkg.sha512",
     "/Users/jalyahesenli/.nuget/packages/system.windows.extensions/9.0.0/system.windows.extensions.9.0.0.nupkg.sha512"

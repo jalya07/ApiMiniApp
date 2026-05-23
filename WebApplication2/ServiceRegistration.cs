@@ -9,6 +9,7 @@ using WebApplication2.Data;
 using WebApplication2.Entities;
 using WebApplication2.Mapping;
 using WebApplication2.Service;
+using WebApplication2.Settings;
 using WebApplication2.Validators.UserValidator;
 
 namespace WebApplication2;
@@ -26,6 +27,9 @@ public static class ServiceRegistration
         opt.AddProfile(new MappingProfile(new HttpClientHandler())));
     services.AddValidatorsFromAssemblyContaining<RegisterCreateValidator>();
     services.AddScoped<IFileUploadService, FileUploadService>();
+    services.Configure<EmailSettings>(config.GetSection("EmailSettings"));
+    services.AddScoped<IEmailService,EmailService>();
+    
     services.AddScoped<JwtService>();
 
     // 1. Identity ПЕРВЫМ — он регистрирует свои схемы

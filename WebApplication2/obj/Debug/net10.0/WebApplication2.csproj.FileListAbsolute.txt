@@ -221,3 +221,6 @@
 /Users/jalyahesenli/RiderProjects/WebApplication2/WebApplication2/obj/Debug/net10.0/WebApplication2.sourcelink.json
 /Users/jalyahesenli/RiderProjects/WebApplication2/WebApplication2/bin/Debug/net10.0/Microsoft.AspNetCore.Identity.EntityFrameworkCore.dll
 /Users/jalyahesenli/RiderProjects/WebApplication2/WebApplication2/bin/Debug/net10.0/Microsoft.AspNetCore.Authentication.JwtBearer.dll
+/Users/jalyahesenli/RiderProjects/WebApplication2/WebApplication2/bin/Debug/net10.0/BouncyCastle.Cryptography.dll
+/Users/jalyahesenli/RiderProjects/WebApplication2/WebApplication2/bin/Debug/net10.0/MailKit.dll
+/Users/jalyahesenli/RiderProjects/WebApplication2/WebApplication2/bin/Debug/net10.0/MimeKit.dll
