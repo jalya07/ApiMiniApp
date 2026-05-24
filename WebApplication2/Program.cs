@@ -21,9 +21,9 @@ using (var scope = app.Services.CreateScope())
             await roleManager.CreateAsync(new IdentityRole(role));
 
     // Test user
-    if (await userManager.FindByNameAsync("Admin") == null)
+    if (await userManager.FindByNameAsync("admin") == null)
     {
-        var user = new AppUser { UserName = "admin", Email = "admin@test.com", FullName = "Admin" };
+        var user = new AppUser { UserName = "admin", Email = "jalahasanli07@gmail.com", FullName = "Admin" };
         await userManager.CreateAsync(user, "password123");
         await userManager.AddToRoleAsync(user, "Admin");
 

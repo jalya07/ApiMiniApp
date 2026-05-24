@@ -124,21 +124,35 @@ public class AccountController(
 
         return Ok(new { accessToken = newAccessToken, refreshToken = newRefreshToken });
     }
+    // [HttpGet("profile")]
+    // [Authorize]
+    // public IActionResult Profile()
+    // {
+    //     var userId = User.FindFirst(ClaimTypes.NameIdentifier);
+    //     var userName = User.Identity?.Name;
+    //     var fullName = User.FindFirst("FullName")?.Value;
+    //     var role = User.Claims.Where(c=>c.Type == ClaimTypes.Role).Select(c => c.Value).FirstOrDefault();
+    //     return Ok(new
+    //     {
+    //        userId,
+    //        userName,
+    //        fullName,
+    //        role
+    //     });
+    // }
     [HttpGet("profile")]
     [Authorize]
     public IActionResult Profile()
     {
-        var userId = User.FindFirst(ClaimTypes.NameIdentifier);
+        var userId = User.FindFirstValue(ClaimTypes.NameIdentifier); // ← строка, не Claim
         var userName = User.Identity?.Name;
         var fullName = User.FindFirst("FullName")?.Value;
-        var role = User.Claims.Where(c=>c.Type == ClaimTypes.Role).Select(c => c.Value).FirstOrDefault();
-        return Ok(new
-        {
-           userId,
-           userName,
-           fullName,
-           role
-        });
+        var role = User.Claims
+            .Where(c => c.Type == ClaimTypes.Role)
+            .Select(c => c.Value)
+            .FirstOrDefault();
+
+        return Ok(new { userId, userName, fullName, role });
     }
 
     // [HttpPost]
@@ -181,6 +195,8 @@ public class AccountController(
         if (!result.Succeeded)
             return BadRequest(result.Errors);
 
+        userManager.UpdateSecurityStampAsync(user);
+        
         return Ok("Password reset successful");
     }
 }

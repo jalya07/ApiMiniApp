@@ -523,3 +523,4 @@
 /Users/jalyahesenli/RiderProjects/WebApplication2/WebApplication2.Tests/obj/Debug/net10.0/ref/WebApplication2.Tests.dll
 /Users/jalyahesenli/RiderProjects/WebApplication2/WebApplication2.Tests/bin/Debug/net10.0/Microsoft.EntityFrameworkCore.InMemory.dll
 /Users/jalyahesenli/RiderProjects/WebApplication2/WebApplication2.Tests/bin/Debug/net10.0/Moq.dll
+/Users/jalyahesenli/RiderProjects/WebApplication2/WebApplication2.Tests/bin/Debug/net10.0/WebApplication2.staticwebassets.runtime.json

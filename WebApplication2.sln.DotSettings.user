@@ -8,6 +8,12 @@
   &lt;TestAncestor&gt;
     &lt;TestId&gt;xUnit::11FCF40E-1E34-4560-8855-1546DF1AD84D::net10.0::WebApplication2.Tests.ValidatorTests.EventCreateValidatorTests.Should_Pass_When_ValidData&lt;/TestId&gt;
     &lt;TestId&gt;xUnit::11FCF40E-1E34-4560-8855-1546DF1AD84D::net10.0::WebApplication2.Tests.ControllerTests.EventsControllerTests&lt;/TestId&gt;
+    &lt;TestId&gt;xUnit::11FCF40E-1E34-4560-8855-1546DF1AD84D::net10.0::WebApplication2.Tests.ControllerTests.EventTest.EventUpdateValidatorTests&lt;/TestId&gt;
+    &lt;TestId&gt;xUnit::11FCF40E-1E34-4560-8855-1546DF1AD84D::net10.0::WebApplication2.Tests.ControllerTests.EventTest.EventCreateValidatorTests&lt;/TestId&gt;
+    &lt;TestId&gt;xUnit::11FCF40E-1E34-4560-8855-1546DF1AD84D::net10.0::WebApplication2.Tests.ControllerTests.OrganizerTest.OrganizerCreateValidatorTests&lt;/TestId&gt;
+    &lt;TestId&gt;xUnit::11FCF40E-1E34-4560-8855-1546DF1AD84D::net10.0::WebApplication2.Tests.ControllerTests.OrganizerTest.OrganizerUpdateValidatorTests&lt;/TestId&gt;
+    &lt;TestId&gt;xUnit::11FCF40E-1E34-4560-8855-1546DF1AD84D::net10.0::WebApplication2.Tests.ControllerTests.TicketTest.TicketCreateValidatorTests&lt;/TestId&gt;
+    &lt;TestId&gt;xUnit::11FCF40E-1E34-4560-8855-1546DF1AD84D::net10.0::WebApplication2.Tests.ControllerTests.TicketTest.TicketUpdateValidatorTests&lt;/TestId&gt;
   &lt;/TestAncestor&gt;
 &lt;/SessionState&gt;</s:String>
 	<s:String x:Key="/Default/Environment/UnitTesting/UnitTestSessionStore/Sessions/=e6586845_002D4200_002D4650_002Daa49_002Dba19be1f9d63/@EntryIndexedValue">&lt;SessionState ContinuousTestingMode="0" Name="EventsControllerTests #2" xmlns="urn:schemas-jetbrains-com:jetbrains-ut-session"&gt;

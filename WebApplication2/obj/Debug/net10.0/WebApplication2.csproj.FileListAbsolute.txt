@@ -538,3 +538,4 @@
 /Users/jalyahesenli/RiderProjects/WebApplication2/WebApplication2/bin/Debug/net10.0/Microsoft.AspNetCore.TestHost.dll
 /Users/jalyahesenli/RiderProjects/WebApplication2/WebApplication2/bin/Debug/net10.0/NSubstitute.dll
 /Users/jalyahesenli/RiderProjects/WebApplication2/WebApplication2/obj/Debug/net10.0/MvcTestingAppManifest.json
+/Users/jalyahesenli/RiderProjects/WebApplication2/WebApplication2/bin/Debug/net10.0/WebApplication2.staticwebassets.runtime.json
