@@ -77,19 +77,19 @@ public class TicketUpdateValidatorTests
             e.ErrorMessage == "Quantity must be non-negative.");
     }
 
-    // [Fact]
-    // public void Should_Pass_When_QuantityIsZero()
-    // {
-    //     var dto = new TicketUpdateDto
-    //     {
-    //         Type = "VIP",
-    //         Price = 299.99m,
-    //         QuantityAvailable = 0
-    //     };
-    //
-    //     var result = _validator.Validate(dto);
-    //     result.IsValid.Should().BeTrue();
-    // }
+    [Fact]
+    public void Should_Pass_When_QuantityIsZero()
+    {
+        var dto = new TicketUpdateDto
+        {
+            Type = "VIP",
+            Price = 299.99m,
+            QuantityAvailable = 0
+        };
+    
+        var result = _validator.Validate(dto);
+        result.IsValid.Should().BeTrue();
+    }
     
     
 }
