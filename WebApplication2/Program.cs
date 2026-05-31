@@ -39,17 +39,19 @@ using (var scope = app.Services.CreateScope())
     }
 }
 
-app.UseExceptionHandler(a => a.Run(async ctx =>
-{
-    var feature = ctx.Features.Get<Microsoft.AspNetCore.Diagnostics.IExceptionHandlerFeature>();
-    ctx.Response.ContentType = "application/json";
-    await ctx.Response.WriteAsJsonAsync(new { 
-        error = feature?.Error.Message, 
-        inner = feature?.Error.InnerException?.Message, 
-        inner2 = feature?.Error.InnerException?.InnerException?.Message,
-        detail = feature?.Error.StackTrace 
-    });
-}));
+// app.UseExceptionHandler(a => a.Run(async ctx =>
+// {
+//     var feature = ctx.Features.Get<Microsoft.AspNetCore.Diagnostics.IExceptionHandlerFeature>();
+//     ctx.Response.ContentType = "application/json";
+//     await ctx.Response.WriteAsJsonAsync(new { 
+//         error = feature?.Error.Message, 
+//         inner = feature?.Error.InnerException?.Message, 
+//         inner2 = feature?.Error.InnerException?.InnerException?.Message,
+//         detail = feature?.Error.StackTrace 
+//     });
+// }));
+
+app.UseMiddleware<ExceptionHandlingMiddleware>();
 
 app.UseSwagger();
 app.UseSwaggerUI();

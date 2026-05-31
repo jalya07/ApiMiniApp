@@ -6,6 +6,7 @@ using WebApplication2.Data;
 using WebApplication2.Dtos;
 using WebApplication2.Dtos.OrganizerDto;
 using WebApplication2.Entities;
+using WebApplication2.Helper;
 using WebApplication2.Service;
 
 namespace WebApplication2.Controllers;
@@ -36,59 +37,92 @@ public class OrganizersController : Controller
  
     // GET /api/organizers
     [HttpGet]
-    public async Task<ActionResult<IEnumerable<OrganizerReadDto>>> GetAll()
+    [ProducesResponseType(typeof(ResponseModelHelper<IEnumerable<OrganizerReadDto>>), 200)]
+    [ProducesResponseType(typeof(ResponseModelHelper<string>), 401)]
+    public async Task<IActionResult> GetAll()
     {
         var organizers = await _db.Organizers.AsNoTracking().ToListAsync();
-        return Ok(_mapper.Map<IEnumerable<OrganizerReadDto>>(organizers));
+        return Ok(ResponseModelHelper<IEnumerable<OrganizerReadDto>>
+            .SuccessResult(_mapper.Map<IEnumerable<OrganizerReadDto>>(organizers)));
     }
  
     // GET /api/organizers/{id}
     [HttpGet("{id:int}")]
-    public async Task<ActionResult<OrganizerReadDto>> GetById(int id)
+    [ProducesResponseType(typeof(ResponseModelHelper<OrganizerReadDto>), 200)]
+    [ProducesResponseType(typeof(ResponseModelHelper<string>), 404)]
+    [ProducesResponseType(typeof(ResponseModelHelper<string>), 401)]
+    public async Task<IActionResult> GetById(int id)
     {
         var organizer = await _db.Organizers.FindAsync(id);
-        if (organizer is null) return NotFound();
-        return Ok(_mapper.Map<OrganizerReadDto>(organizer));
+        if (organizer is null)
+            return NotFound(ResponseModelHelper<string>
+                .NotFoundResult($"Organizer {id} not found."));
+
+        return Ok(ResponseModelHelper<OrganizerReadDto>
+            .SuccessResult(_mapper.Map<OrganizerReadDto>(organizer)));
     }
  
     // POST /api/organizers
     [HttpPost]
-    public async Task<ActionResult<OrganizerReadDto>> Create([FromBody] OrganizerCreateDto dto)
+    [ProducesResponseType(typeof(ResponseModelHelper<OrganizerReadDto>), 201)]
+    [ProducesResponseType(typeof(ResponseModelHelper<string>), 400)]
+    [ProducesResponseType(typeof(ResponseModelHelper<string>), 401)]
+    public async Task<IActionResult> Create([FromBody] OrganizerCreateDto dto)
     {
         var validation = await _createValidator.ValidateAsync(dto);
         if (!validation.IsValid)
-            return BadRequest(validation.Errors.Select(e => e.ErrorMessage));
- 
+            return BadRequest(ResponseModelHelper<string>
+                .BadRequestResult(validation.Errors.Select(e => e.ErrorMessage).ToArray()));
+
+        var emailExists = await _db.Organizers.AnyAsync(o => o.Email == dto.Email);
+        if (emailExists)
+            return Conflict(ResponseModelHelper<string>
+                .ConflictResult("Organizer with this email already exists."));
+
         var entity = _mapper.Map<Organizer>(dto);
         _db.Organizers.Add(entity);
         await _db.SaveChangesAsync();
- 
-        return CreatedAtAction(nameof(GetById), new { id = entity.OrganizerId }, _mapper.Map<OrganizerReadDto>(entity));
+
+        return CreatedAtAction(nameof(GetById), new { id = entity.OrganizerId },
+            ResponseModelHelper<OrganizerReadDto>
+                .CreatedResult(_mapper.Map<OrganizerReadDto>(entity)));
     }
  
     // PUT /api/organizers/{id}
     [HttpPut("{id:int}")]
+    [ProducesResponseType(204)]
+    [ProducesResponseType(typeof(ResponseModelHelper<string>), 400)]
+    [ProducesResponseType(typeof(ResponseModelHelper<string>), 404)]
+    [ProducesResponseType(typeof(ResponseModelHelper<string>), 401)]
     public async Task<IActionResult> Update(int id, [FromBody] OrganizerUpdateDto dto)
     {
         var validation = await _updateValidator.ValidateAsync(dto);
         if (!validation.IsValid)
-            return BadRequest(validation.Errors.Select(e => e.ErrorMessage));
- 
+            return BadRequest(ResponseModelHelper<string>
+                .BadRequestResult(validation.Errors.Select(e => e.ErrorMessage).ToArray()));
+
         var entity = await _db.Organizers.FindAsync(id);
-        if (entity is null) return NotFound();
- 
+        if (entity is null)
+            return NotFound(ResponseModelHelper<string>
+                .NotFoundResult($"Organizer {id} not found."));
+
         _mapper.Map(dto, entity);
         await _db.SaveChangesAsync();
         return NoContent();
     }
- 
+
     // DELETE /api/organizers/{id}
     [HttpDelete("{id:int}")]
+    [ProducesResponseType(204)]
+    [ProducesResponseType(typeof(ResponseModelHelper<string>), 404)]
+    [ProducesResponseType(typeof(ResponseModelHelper<string>), 401)]
     public async Task<IActionResult> Delete(int id)
     {
         var entity = await _db.Organizers.FindAsync(id);
-        if (entity is null) return NotFound();
- 
+        if (entity is null)
+            return NotFound(ResponseModelHelper<string>
+                .NotFoundResult($"Organizer {id} not found."));
+
         _fileService.DeleteFile(entity.LogoUrl);
         _db.Organizers.Remove(entity);
         await _db.SaveChangesAsync();
@@ -98,14 +132,21 @@ public class OrganizersController : Controller
     // POST /api/organizers/{id}/logo
     [HttpPost("{id:int}/logo")]
     [Consumes("multipart/form-data")]
-    public async Task<ActionResult<OrganizerReadDto>> UploadLogo(int id, IFormFile file)
+    [ProducesResponseType(typeof(ResponseModelHelper<OrganizerReadDto>), 200)]
+    [ProducesResponseType(typeof(ResponseModelHelper<string>), 400)]
+    [ProducesResponseType(typeof(ResponseModelHelper<string>), 404)]
+    [ProducesResponseType(typeof(ResponseModelHelper<string>), 401)]
+    public async Task<IActionResult> UploadLogo(int id, IFormFile file)
     {
         var entity = await _db.Organizers.FindAsync(id);
-        if (entity is null) return NotFound();
- 
+        if (entity is null)
+            return NotFound(ResponseModelHelper<string>
+                .NotFoundResult($"Organizer {id} not found."));
+
         if (file is null || file.Length == 0)
-            return BadRequest("No file provided.");
- 
+            return BadRequest(ResponseModelHelper<string>
+                .BadRequestResult("No file provided."));
+
         try
         {
             _fileService.DeleteFile(entity.LogoUrl);
@@ -114,24 +155,33 @@ public class OrganizersController : Controller
         }
         catch (InvalidOperationException ex)
         {
-            return BadRequest(ex.Message);
+            return BadRequest(ResponseModelHelper<string>
+                .BadRequestResult(ex.Message));
         }
- 
-        return Ok(_mapper.Map<OrganizerReadDto>(entity));
+
+        return Ok(ResponseModelHelper<OrganizerReadDto>
+            .SuccessResult(_mapper.Map<OrganizerReadDto>(entity)));
     }
+
  
     // GET /api/organizers/{organizerId}/events
     [HttpGet("{organizerId:int}/events")]
-    public async Task<ActionResult<IEnumerable<EventReadDto>>> GetEvents(int organizerId)
+    [ProducesResponseType(typeof(ResponseModelHelper<IEnumerable<EventReadDto>>), 200)]
+    [ProducesResponseType(typeof(ResponseModelHelper<string>), 404)]
+    [ProducesResponseType(typeof(ResponseModelHelper<string>), 401)]
+    public async Task<IActionResult> GetEvents(int organizerId)
     {
         var organizerExists = await _db.Organizers.AnyAsync(o => o.OrganizerId == organizerId);
-        if (!organizerExists) return NotFound($"Organizer {organizerId} not found.");
- 
+        if (!organizerExists)
+            return NotFound(ResponseModelHelper<string>
+                .NotFoundResult($"Organizer {organizerId} not found."));
+
         var events = await _db.Events
             .AsNoTracking()
             .Where(e => e.OrganizerId == organizerId)
             .ToListAsync();
- 
-        return Ok(_mapper.Map<IEnumerable<EventReadDto>>(events));
+
+        return Ok(ResponseModelHelper<IEnumerable<EventReadDto>>
+            .SuccessResult(_mapper.Map<IEnumerable<EventReadDto>>(events)));
     }
 }
