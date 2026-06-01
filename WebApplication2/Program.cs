@@ -1,4 +1,5 @@
 using Microsoft.AspNetCore.Identity;
+using Microsoft.EntityFrameworkCore;
 using WebApplication2;
 using WebApplication2.Data;
 using WebApplication2.Entities;
@@ -9,11 +10,17 @@ var builder = WebApplication.CreateBuilder(args);
 builder.Services.AddServices(builder.Configuration);
 
 var app = builder.Build();
+// using (var scope = app.Services.CreateScope())
+// {
+//     var db = scope.ServiceProvider.GetRequiredService<AppDbContext>();
+//     db.Database.Migrate();
+// }
 using (var scope = app.Services.CreateScope())
 {
     var db = scope.ServiceProvider.GetRequiredService<AppDbContext>();
     var userManager = scope.ServiceProvider.GetRequiredService<UserManager<AppUser>>();
     var roleManager = scope.ServiceProvider.GetRequiredService<RoleManager<IdentityRole>>();
+    db.Database.Migrate();
 
     // Roles
     foreach (var role in new[] { "Member", "Admin" })
