@@ -20,6 +20,8 @@ using (var scope = app.Services.CreateScope())
     var db = scope.ServiceProvider.GetRequiredService<AppDbContext>();
     var userManager = scope.ServiceProvider.GetRequiredService<UserManager<AppUser>>();
     var roleManager = scope.ServiceProvider.GetRequiredService<RoleManager<IdentityRole>>();
+    
+    
     db.Database.Migrate();
 
     // Roles
@@ -27,7 +29,6 @@ using (var scope = app.Services.CreateScope())
         if (!await roleManager.RoleExistsAsync(role))
             await roleManager.CreateAsync(new IdentityRole(role));
 
-    // Test user
     if (await userManager.FindByNameAsync("admin") == null)
     {
         var user = new AppUser { UserName = "admin", Email = "jalahasanli07@gmail.com", FullName = "Admin" };
@@ -35,14 +36,14 @@ using (var scope = app.Services.CreateScope())
         await userManager.AddToRoleAsync(user, "Admin");
 
         // UserEvents seed — после того как user создан
-        if (!db.UserEvents.Any())
-        {
-            db.UserEvents.AddRange(
-                new UserEvent { AppUserId = user.Id, EventId = 1 },
-                new UserEvent { AppUserId = user.Id, EventId = 2 }
-            );
-            await db.SaveChangesAsync();
-        }
+        // if (!db.UserEvents.Any())
+        // {
+        //     db.UserEvents.AddRange(
+        //         new UserEvent { AppUserId = user.Id, EventId = 1 },
+        //         new UserEvent { AppUserId = user.Id, EventId = 2 }
+        //     );
+        //     await db.SaveChangesAsync();
+        // }
     }
 }
 
@@ -60,8 +61,15 @@ using (var scope = app.Services.CreateScope())
 
 app.UseMiddleware<ExceptionHandlingMiddleware>();
 
+
 app.UseSwagger();
-app.UseSwaggerUI();
+
+// app.UseSwaggerUI();
+app.UseSwaggerUI(c =>
+{
+    c.SwaggerEndpoint("/swagger/v1/swagger.json", "API v1");
+    c.RoutePrefix = "swagger";
+});
 
 app.UseStaticFiles();
 app.UseAuthentication(); 
