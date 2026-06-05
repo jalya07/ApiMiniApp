@@ -6,7 +6,7 @@ using WebApplication2.Entities;
 
 var builder = WebApplication.CreateBuilder(args);
 
-// Вызываем ServiceRegistration — регистрирует всё (Identity, AutoMapper, Validators и т.д.)
+
 builder.Services.AddServices(builder.Configuration);
 
 var app = builder.Build();
